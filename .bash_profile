@@ -8,6 +8,16 @@
 # ------------------------------------------------------------
 
 #======================
+# User-Specifc Settings
+#======================
+# touch a file in your home directory and save any machine-specific
+# settings, or settings you don't want to check into Git there
+
+if [ -f "$HOME/.$USER" ]; then
+    source "$HOME/.$USER"
+fi
+
+#======================
 # Environment Variables
 #======================
 
@@ -44,8 +54,8 @@ alias showpath='echo $PATH | tr ":" "\n" | nl'
 
 alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
 alias less='less -FSRXc'                    # Preferred 'less' implementation
-cd() { builtin cd "$@"; ll; } 
-mcd () { mkdir -p "$1" && cd "$1"; } 
+cd() { builtin cd "$@"; ll; }
+mcd () { mkdir -p "$1" && cd "$1"; }
 
 alias ll='ls -Alth'
 alias lsd='ls -l | grep "^d"'
@@ -53,7 +63,7 @@ alias lst='ls -R | grep ":$" | sed -e '"'"'s/:$//'"'"' -e '"'"'s/[^-][^\/]*\//--
 alias u='clear; cd ../; pwd; ls -lhGgo'
 alias d='clear; cd -; ls -lhGgo'
 
-alias ~="cd ~" 
+alias ~="cd ~"
 alias ..='cd ..'
 alias ...='cd ../../'
 alias ....='cd ../../../'
@@ -69,17 +79,6 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 alias mkdir='mkdir -pv'
-
-#========
-# Host Shortcuts
-#========
-
-alias green='ssh pi@greenlantern.local'
-alias red='ssh pi@spiderman.local'
-alias spider='ssh pi@spiderman.local'
-alias ddwrt='ssh root@192.168.1.1'
-alias retro='ssh pi@retropie.local'
-alias otg='ssh pi@raspberrypi.local'
 
 #================
 # Custom Calendar
@@ -168,7 +167,7 @@ decrypt () {
 # Purple      0;35     Bold Purple  1;35  Magenta   45
 # Cyan        0;36     Bold Cyan    1;36  Cyan      46
 # Gray            0;37     White        1;37  Gray      47
-# 
+#
 # Set Color Example: \033[1;37;44m
 # Color Reset: \033[0m
 
@@ -183,11 +182,11 @@ bar () {
 }
 
 colors () {
-    #   This function echoes a bunch of color codes to the 
-    #   terminal to demonstrate what's available.  Each 
+    #   This function echoes a bunch of color codes to the
+    #   terminal to demonstrate what's available.  Each
     #   line is the color code of one forground color,
-    #   out of 17 (default + 16 escapes), followed by a 
-    #   test use of that color on all nine background 
+    #   out of 17 (default + 16 escapes), followed by a
+    #   test use of that color on all nine background
     #   colors (default + 8 escapes).
 
     T='gYw'   # The test text
@@ -253,7 +252,7 @@ function extract {
     do
       if [ -f "$n" ] ; then
           case "${n%,}" in
-            *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar) 
+            *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
                          tar xvf "$n"       ;;
             *.lzma)      unlzma ./"$n"      ;;
             *.bz2)       bunzip2 ./"$n"     ;;
