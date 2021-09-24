@@ -55,7 +55,7 @@ alias showpath='echo $PATH | tr ":" "\n" | nl'
 alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
 alias less='less -FSRXc'                    # Preferred 'less' implementation
 cd() { builtin cd "$@"; ll; }
-mcd () { mkdir -p "$1" && cd "$1"; }
+mcd() { mkdir -p "$1" && cd "$1"; }
 
 alias ll='ls -Alth'
 alias lsd='ls -l | grep "^d"'
@@ -275,4 +275,25 @@ function extract {
       fi
     done
 fi
+}
+
+function fingerprint {
+  ssh-keygen -lf $1 -E md5
+}
+
+function RenameByEXIF ()
+{
+	local exifdate=`jhead -se "$1" | grep "Date/Time" | sed 's/Date\/Time//;s/://g;s/ //g'`
+#	local exifdate=`jhead -se "$1" | grep "File date" | sed 's/File\ date//;s/://g;s/ //g'`
+	if [ -z "$exifdate" ] || [ "$exifdate" = "00000000000000" ]
+	then
+		echo $1 "doesn't have EXIF data that can be read by this functio
+n!"
+	else
+		mv "$1" "$exifdate.jpg"
+	fi
+}
+
+function dirSummary () {
+  find $1 -type f | sed -n 's/..*\.//p' | sort | uniq -c
 }
