@@ -24,10 +24,12 @@ case $2 in
 
     ;;
   VHS)
+    # For VHS captured at 720x486 (Intensity Pro): removes overscan lines for a cleaner digital file and scales
+    # to 640x480 for proper 4:3 aspect ratio. Adds slight increase in Gamma/Saturation for richer color.
     CRF_QUALITY=18
     FF_PRESET="medium"
     AUDIO_BITRATE="192k"
-    VIDEO_FILTERS="bwdif=1:1:0,eq=gamma=1.1:saturation=1.5"
+    VIDEO_FILTERS="bwdif=1:1:0,crop=704:470:8:8,scale=640:480:interl=1,eq=gamma=1.1:saturation=1.5"
 
     ;;
   DV)
@@ -38,44 +40,41 @@ case $2 in
 
     ;;
   *)
-    CRF_QUALITY=18
-    FF_PRESET="medium"
-    AUDIO_BITRATE="256k"
-    
-  ;;
+    CRF_QUALITY=20
+    FF_PRESET="fast"
+    AUDIO_BITRATE="192k"
+    VIDEO_FILTERS="bwdif=1:-1:0"
+	;;
 esac
 
-#Top Field First
-#VHS_VIDEO_FILTERS="bwdif=1:0:0,crop=720:480-10:0:5"
-#Bottom Field First
-#VIDEO_FILTERS="bwdif=1:1:0,eq=gamma=1.1:saturation=1.5"
-#VHS_VIDEO_FILTERS="bwdif=1:1:0,crop=720-10:480-16:5:8,fps=29.97"
-#VHS_VIDEO_FILTERS="bwdif=1:1:0,hqdn3d=10,pp=al,crop=720-10:480-16:5:8,fps=29.97"
-#VHS_VIDEO_FILTERS="bwdif=1:1:0,hqdn3d=5,pp=al,fillborders=left=10:right=10:top=10:bottom=10:mode=fixed"
-#VHS_VIDEO_FILTERS="bwdif=1:1:0,eq=gamma=1:saturation=1,hqdn3d=2,fillborders=left=20:right=5:top=5:bottom=15:mode=fixed"
-#VHS_VIDEO_FILTERS="bwdif=1:1:0,eq=gamma=1.1:saturation=1.2,hqdn3d=2.5,crop=690:460:20:5"
-#VHS_VIDEO_FILTERS="bwdif=1:1:0,pp=al,hqdn3d=2,fillborders=left=20:right=5:top=5:bottom=15:mode=fixed"
-
-# Stub: Function that will take the friendly title and conver it into a file name that's consistenly formatted to the following: Beatrice.Rides.the.Scrambler.2009-06-13.mp4
-# Media files will be stored in folders by year, so leading with the Title (rather than the date) should help with finding and sorting videos more quickly.
-
 function createFriendlyFileName () {
-# Input: this function expects TITLE and DATE variables to passed into the first and second positions
-# Output: a single string that can be used as a file name where spaces are converted to periods (.) and special characters are removed and a timestamp is converted to a simple date.
+# Description: This function takes the friendly title and converts it into a file name that's consistenly formatted to remove spaces and special characters.
+# Usage: createFriendlyFileName "$TEST_STRING" "$TEST_DATE"
+# Input: this function expects TITLE and DATE variables to passed into the first and second positions. 
+# Output: a single string that can be used as a file name where spaces are converted to periods (.) and special characters are removed and a timestamp is converted to a simple date. Example output: 2009-06-13.Beatrice.Rides.the.Scrambler.mp4
+	if [ $# -eq 0 ]; then
+		echo "createFriendlyFileName requires at least one argument (file name)"
+		exit
+	fi
 
 	TITLE_PART="$1"
 	# Handle multiple spaces, tabs, etc
 	TITLE_PART=${TITLE_PART//+([[:space:]])/ }
 	# Remove commas, single and double quotes (can add others)
-	TITLE_PART=${TITLE_PART//[\'\",]/}
+	TITLE_PART=${TITLE_PART//[\'\",)(!]/}
 	# Replace special characters with a space (can add others)
 	TITLE_PART=${TITLE_PART//[-&+]/ }
 	# Replace remaining spaces with periods
 	TITLE_PART=${TITLE_PART//[^[:alnum:]]/\.}
-	DATE_PART=${2:0:10}
-	echo $TITLE_PART.$DATE_PART
+	if [ -z "$2" ]; then
+		echo $TITLE_PART
+	else
+		# Remove dashes and colons
+		#DATE_PART=${2//[-: ]/}
+		DATE_PART=${2:0:10}
+		echo $DATE_PART.$TITLE_PART
+	fi
 }
-
 
 METADATA="False"
 
@@ -94,6 +93,7 @@ if [ $METADATA == "True" ]; then
 	-c:v libx264 -x264-params ref=4 \
 	-c:a aac -b:a $AUDIO_BITRATE -ac 2 \
 	-pix_fmt yuv420p \
+	-aspect 4:3 \
 	-vf "$VIDEO_FILTERS" \
 	-preset "$FF_PRESET" \
 	-crf $CRF_QUALITY \
@@ -107,28 +107,30 @@ if [ $METADATA == "True" ]; then
 	"$FRIENDLY_FILE_NAME".mp4
   else
   	ffmpeg -i "$1" \
-  	-ss "$START_TIME" \
-	-to "$END_TIME" \
-	-c:v libx264 -x264-params ref=4 \  		
-	-c:a aac -b:a $AUDIO_BITRATE -ac 2 \
-	-pix_fmt yuv420p \
-	-vf "$VIDEO_FILTERS" \
-	-preset "$FF_PRESET" \
-	-crf $CRF_QUALITY \
-	-movflags +faststart \
-	-write_tmcd 0 \
-	-metadata CREATION_TIME="$MD_DATE" \
-	-metadata DESCRIPTION="$DESCRIPTION" \
-	-metadata TITLE="$EPISODE_TITLE" \
-	-metadata GENRE="$GENRE" \
-	-metadata DATE="$MD_DATE" \
-	"$FRIENDLY_FILE_NAME".mp4
+	  -ss ${START_TIME} \
+		-to ${END_TIME} \
+		-c:v libx264 -x264-params ref=4 \
+		-c:a aac -b:a $AUDIO_BITRATE -ac 2 \
+		-pix_fmt yuv420p \
+		-aspect 4:3 \
+		-vf "$VIDEO_FILTERS" \
+		-preset "$FF_PRESET" \
+		-crf $CRF_QUALITY \
+		-movflags +faststart \
+		-write_tmcd 0 \
+		-metadata CREATION_TIME="$MD_DATE" \
+		-metadata DESCRIPTION="$DESCRIPTION" \
+		-metadata TITLE="$EPISODE_TITLE" \
+		-metadata GENRE="$GENRE" \
+		-metadata DATE="$MD_DATE" \
+		"$FRIENDLY_FILE_NAME".mp4
   fi
 else
 	ffmpeg -i "$1" \
 	-c:v libx264 -x264-params ref=4 \
 	-c:a aac -b:a $AUDIO_BITRATE -ac 2 \
 	-pix_fmt yuv420p \
+	-aspect 4:3 \
 	-vf "$VIDEO_FILTERS" \
 	-preset "$FF_PRESET" \
 	-crf $CRF_QUALITY \
