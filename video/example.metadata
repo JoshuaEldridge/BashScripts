@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+MD_DATE="1994-12-25 07:41:00.000"
+DATE="$MD_DATE"
+CREATION_TIME="$MD_DATE"
+FRIENDLY_DATE=`date -d "${MD_DATE}" '+%A %B %e, %Y at %-I:%M%P'`
+DESCRIPTION="This video was originally captured on ${FRIENDLY_DATE}. Archive: $REEL_NAME"
+EPISODE_TITLE="Christmas 1994"
+GENRE="Home Video Archive"
+#START_TIME=00:01:10
+#END_TIME=00:01:20
+#FRIENDLY_FILE_NAME="1994-12-25.Christmas.1994"
