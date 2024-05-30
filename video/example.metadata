@@ -6,6 +6,14 @@ FRIENDLY_DATE=`date -d "${MD_DATE}" '+%A %B %e, %Y at %-I:%M%P'`
 DESCRIPTION="This video was originally captured on ${FRIENDLY_DATE}. Archive: $REEL_NAME"
 EPISODE_TITLE="Christmas 1994"
 GENRE="Home Video Archive"
+
+# Other variables can be overridden in the metadata file as well, including:
+
 #START_TIME=00:01:10
 #END_TIME=00:01:20
 #FRIENDLY_FILE_NAME="1994-12-25.Christmas.1994"
+#ASPECT_RATIO="16:9"
+#CRF_QUALITY=18
+#FF_PRESET="medium"
+#AUDIO_BITRATE="256k"
+#VIDEO_FILTERS="bwdif=0:-1:1"

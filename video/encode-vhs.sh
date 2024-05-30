@@ -20,20 +20,23 @@ if ! command -v ffmpeg &>/dev/null ; then
 fi
 
 shopt -s extglob
-TEST_STRING="Beatrice-Ride's the+Scrambler,     at the Parish&Picnic"
+TEST_STRING="Beatrice-Ride's the+Scrambler,     (at) the Parish&Picnic!"
 TEST_DATE="2009-06-13 10:18:52"
 
 case $2 in
   HH)
-    CRF_QUALITY=20
+    ASPECT_RATIO="16:9"
+    CRF_QUALITY=18
     FF_PRESET="medium"
-    AUDIO_BITRATE="192k"
+    AUDIO_BITRATE="256k"
     VIDEO_FILTERS="bwdif=0:-1:1"
-
+    # This hqdn3d filter worked really well for dark, pixelated footage from handheld
+    #VIDEO_FILTERS="bwdif=0:-1:1,hqdn3d=4:5:4:4"
     ;;
   VHS)
     # For VHS captured at 720x486 (Intensity Pro): removes overscan lines for a cleaner digital file and scales
     # to 640x480 for proper 4:3 aspect ratio. Adds increases in Gamma/Saturation for richer color.
+    ASPECT_RATIO="4:3"
     CRF_QUALITY=18
     FF_PRESET="veryfast"
     AUDIO_BITRATE="192k"
@@ -42,17 +45,17 @@ case $2 in
     VIDEO_FILTERS="bwdif=1:1:0,crop=704:470:8:8,scale=640:480:interl=1,hqdn3d=4:5:4:4"
     #VIDEO_FILTERS="bwdif=1:1:0,crop=704:470:8:8,scale=640:480:interl=1"
     #VIDEO_FILTERS="bwdif=1:1:0,crop=704:470:8:8,scale=640:480:interl=1,atadenoise,hqdn3d=4,unsharp=7:7:0.5"
-
     ;;
   DV)
+    ASPECT_RATIO="4:3"
     CRF_QUALITY=18
     FF_PRESET="medium"
     AUDIO_BITRATE="256k"
     VIDEO_FILTERS="bwdif=1:1:0,eq=gamma=1.1:saturation=1.5"
-
     ;;
   *)
-    CRF_QUALITY=20
+    ASPECT_RATIO="16:9"
+    CRF_QUALITY=22
     FF_PRESET="fast"
     AUDIO_BITRATE="192k"
     VIDEO_FILTERS="bwdif=1:-1:0"
@@ -73,9 +76,9 @@ function createFriendlyFileName () {
 	TITLE_PART="$1"
 	# Handle multiple spaces, tabs, etc
 	TITLE_PART=${TITLE_PART//+([[:space:]])/ }
-	# Remove commas, single and double quotes (can add others)
-	TITLE_PART=${TITLE_PART//[\'\",)(!]/\.}
-	# Replace special characters with a space (can add others)
+	# Characters to completely remove (can add others)
+	TITLE_PART=${TITLE_PART//[\'\"\,\!\(\)]/}
+	# Special characters to replace with a space (can add others)
 	TITLE_PART=${TITLE_PART//[-&+]/ }
 	# Replace remaining spaces with periods
 	TITLE_PART=${TITLE_PART//[^[:alnum:]]/\.}
@@ -83,9 +86,9 @@ function createFriendlyFileName () {
 		echo $TITLE_PART
 	else
 		# Remove dashes and colons
-		#DATE_PART=${2//[-: ]/}
-		DATE_PART=${2:0:10}
-		echo $DATE_PART.$TITLE_PART
+		DATE_PART=${2//[-: ]/}
+		DATE_PART=${DATE_PART:0:14}
+		echo $DATE_PART-$TITLE_PART
 	fi
 }
 
@@ -124,7 +127,7 @@ function zipMKV() {
 
 METADATA="False"
 
-getReelFromPWD
+#getReelFromPWD
 
 FILE_BASENAME="${1%.*}"
 
@@ -138,6 +141,7 @@ else
 	METADATA="True"
 fi
 
+echo $FILE_BASENAME
 if [ $METADATA == "True" ]; then
 	if [ -z $FRIENDLY_FILE_NAME ]; then
   	FRIENDLY_FILE_NAME=$(createFriendlyFileName "$EPISODE_TITLE" "$MD_DATE")
@@ -148,7 +152,7 @@ if [ $METADATA == "True" ]; then
 		-c:v libx264 -x264-params ref=4 \
 		-c:a aac -b:a $AUDIO_BITRATE -ac 2 \
 		-pix_fmt yuv420p \
-		-aspect 4:3 \
+		-aspect $ASPECT_RATIO \
 		-vf "$VIDEO_FILTERS" \
 		-preset "$FF_PRESET" \
 		-crf $CRF_QUALITY \
@@ -167,7 +171,7 @@ if [ $METADATA == "True" ]; then
 			-c:v libx264 -x264-params ref=4 \
 			-c:a aac -b:a $AUDIO_BITRATE -ac 2 \
 			-pix_fmt yuv420p \
-			-aspect 4:3 \
+			-aspect $ASPECT_RATIO \
 			-vf "$VIDEO_FILTERS" \
 			-preset "$FF_PRESET" \
 			-crf $CRF_QUALITY \
@@ -185,7 +189,7 @@ if [ $METADATA == "True" ]; then
 	-c:v libx264 -x264-params ref=4 \
 	-c:a aac -b:a $AUDIO_BITRATE -ac 2 \
 	-pix_fmt yuv420p \
-	-aspect 4:3 \
+	-aspect $ASPECT_RATIO \
 	-vf "$VIDEO_FILTERS" \
 	-preset "$FF_PRESET" \
 	-crf $CRF_QUALITY \
