@@ -1,5 +1,12 @@
 #!/usr/bin/bash
 
+# This script is meant to be run in a folder of similar video file formats
+# and handles: native dv streams, mkv files and avi properly. It will sort them
+# by name and concatenate them together using the name of the first file as the base
+# and append "-episode" to the end. This simplifies the process of concatenating files
+# in time order (if they are named in a standard way), as well as using the correct
+# method for joining files based on the file format.
+
 function getFileExtension () {
     case $1 in
       (.*.*) extension=${1##*.};;
@@ -25,15 +32,6 @@ function join_by {
     printf %s "$f" "${@/#/$d}"
   fi
 }
-
-
-# This function is meant to be run in a folder of similar video file formats
-# and handles: native dv streams, mkv files and avi properly. It will sort them
-# by name and concatenate them together using the name of the first file as the base
-# and append "-episode" to the end. This simplifies the process of concatenating files
-# in time order (if they are named in a standard way), as well as using the correct
-# method for joining files based on the file format.
-
 
 if [[ $# -eq 0 ]]; then
     echo "This script requires at least one argument with a value of: dv, mkv or avi"

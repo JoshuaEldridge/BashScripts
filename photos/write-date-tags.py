@@ -8,7 +8,7 @@
 # CreateDate
 # Make = "Sony
 # Model = "Digital Mavica FD73"
-# exiftool "-DateTimeOriginal=1999:10:11 06:30:00" 19991011063000.jpg
+# exiftool "-DateTimeOriginal="2024:03:15 19:23:00" 19991011063000.jpg
 # exiftool -if 'not $exif:DateTimeOriginal' "-datetimeoriginal<filename" "-datetime<filename" "-createdate<filename" dir
 
 # exiftool "-datetimeoriginal<filename" "-datetime<filename" "-createdate<filename" .
@@ -21,7 +21,7 @@
 # exiftool -F "-FileName<FileModifyDate" -d "%Y%m%d%H%M%S.%%le" .
 
 # exiftool "-DateTimeOriginal=2006:08:23 12:52:31"
-#exiftool "-FileName<DateTimeOriginal" -d "%Y%m%d%H%M%S.%%le" Fishing.jpg
+# Fishing.jpg
 #exiftool "-datetimeoriginal<filename" "-datetime<filename" "-createdate<filename" 20060823125231.jpg
 
 # Show all of the time/date tags on a photo
@@ -48,7 +48,7 @@ sourceDir="/home/josh/Pictures/Photo-Archive/1999/10"
 print(f"Files in the directory: {sourceDir}")
 
 files = os.listdir(sourceDir)
-files = [f for f in files if os.path.isfile(sourceDir+'/'+f)] #Filtering only the files.
+fiels = [f for f in files if os.path.isfile(sourceDir+'/'+f)] #Filtering only the files.
 print(*files, sep="\n")
 
 for f in files:

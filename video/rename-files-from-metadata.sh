@@ -1,5 +1,11 @@
 #!/usr/bin/bash
 
+shopt -s extglob
+
+if ! command -v mediainfo &>/dev/null ; then
+  echo "This script requires MediaInfo to run! Please install and try again."
+  exit
+fi
 
 function friendlyRename () {
 # Input: this function expects TITLE and DATE variables to passed into the first and second positions

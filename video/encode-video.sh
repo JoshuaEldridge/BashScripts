@@ -13,6 +13,7 @@
 # In order to create a short clip with a different name from a file, a third argument with the
 # name of the .metadata file can be passed.
 # Example encode-vhs.sh Lossless-VHS-Capture-03.FFV1.mkv VHS short_clip.metadata
+# Future: Detect if the passed in file is an mp4, in which case, do not re-encode it.
 
 if ! command -v ffmpeg &>/dev/null ; then
   echo "This script requires ffmpeg to run! Please install and try again."
@@ -99,31 +100,6 @@ function getReelFromPWD() {
   #REEL_NUMBER=$(basename "$PARENT")
   REEL_NAME=$(basename "$PWD")
   echo $REEL_NAME
-}
-
-function zipMKV() {
-# This function is meant to be run in a folder of native mkv streams. 
-# IMPORTANT: It requires mkvtoolnix to be installed!
-# It will sort them by name and concatenate them together using the 
-# name of the first file as the base.
-
-	if ! command -v mkvmerge &>/dev/null ; then
-	  echo "This function requires mkvmerge to run! Please install and try again."
-	  exit
-	fi
-
-  first_file=$(ls -1 *.mkv | sort | head -1)
-  input_files=""
-  for f in $(ls -1 *.mkv | sort)
-  do
-      input_files="${input_files} $f"
-  done
-  base=`getFileBasename $first_file`
-  ext=`getFileExtension $first_file`
-  output_file="${base}-episode.${ext}"
-  mkvmerge -o $output_file '[' $input_files ']'  
-  #echo "$input_files"
-  #exit;
 }
 
 METADATA="False"
