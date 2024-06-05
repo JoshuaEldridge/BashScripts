@@ -1,0 +1,87 @@
+;FFMETADATA1
+major_brand=isom
+minor_version=512
+compatible_brands=isomiso2avc1mp41
+genre=Live Music Performance
+date=2019-05-25 19:00:00.000
+title=Peach Pit: You and Your Friends (Full Live Concert)
+description=2019 CBC Music Festival Performance: It's not often we get stage-diving action during a set, but it happened here — tune in to Peach Pit's show on the q Stage.1. Private Presley 2. Being So Normal 3. Alrighty Aphrodite 4. Techno Show 5. Hot Knifer 6. Chagu's Sideturn 7. Sweet FA 8. Seventeen 9. Peach Pit 10. Drop the Guillotine 11. Psychics in L.A. 12. Tommy's Party 13. Puppy Grin
+encoder=Lavf60.10.100
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=0
+END=359999
+title=1. Private Presley
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=360000
+END=586999
+title=2. Being So Normal
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=587000
+END=824999
+title=3. Alrighty Aphrodite
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=825000
+END=1079999
+title=4. Techno Show
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=1080000
+END=1324999
+title=5. Hot Knifer
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=1325000
+END=1546999
+title=6. Chagu's Sideturn
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=1547000
+END=1749999
+title=7. Sweet FA
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=1750000
+END=1994999
+title=8. Seventeen
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=1995000
+END=2244999
+title=9. Peach Pit
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=2245000
+END=2549999
+title=10. Drop the Guillotine
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=2550000
+END=2787999
+title=11. Psychics in L.A.
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=2788000
+END=3145999
+title=12. Tommy's Party
+
+[CHAPTER]
+TIMEBASE=1/1000
+START=3146000
+END=3378999
+title=13. Puppy Grin
